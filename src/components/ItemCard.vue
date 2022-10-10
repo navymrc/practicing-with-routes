@@ -3,38 +3,35 @@
         data() {
             return {
                 label: "uk-button uk-label uk-label-success",
-                tutorials: [
-                    {
-                        title: "JavaScript",
-                        description: "Create a JavaScript code snippet that will be executed on your browser.",
-                        status: "Pending"
-                    },
-                    {
-                        title: "CSS",
-                        description: "CSS is the language we use to style an HTML document. CSS describes how HTML elements should be displayed. ",
-                        status: "Published"
-                    },
-                    {
-                        title: "PHP",
-                        description: "A popular general-purpose scripting language that is especially suited to web development. Fast, flexible and pragmatic.",
-                        status: "Published"
-                    }
-                ]
+                tutorials: []
             }
         },
         methods: {
+            storage() {
+                localStorage.setItem('tutorials', JSON.stringify([]));
+            },
             labelControl(val) {
                 this.label = val == "Published" ? "uk-button uk-label uk-label-success" : "uk-button uk-label uk-label-warning";
                 return this.label;
             },
             clearList() {
+                this.storage();
                 this.tutorials = [];
             },
             changeStatus(index) {
                 let list = this.tutorials;
+                let tutorials = JSON.parse(localStorage.getItem('tutorials'));
+                if (tutorials == undefined) return this.storage();
+                tutorials[index].status = tutorials[index].status == "Published" ? "Pending" : "Published";
+                localStorage.setItem('tutorials', JSON.stringify(tutorials));
                 list[index].status = list[index].status == "Published" ? "Pending" : "Published";
                 this.tutorials = list;
             }
+        },
+        mounted() {
+            let tutorials = JSON.parse(localStorage.getItem('tutorials'));
+            if (tutorials == undefined) this.storage();
+            this.tutorials = tutorials;
         }
     }
 </script>
